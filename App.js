@@ -6,6 +6,7 @@ import Button from './components/Buttons';
 import CircularButton from './components/CircularButton';
 import IconButton from './components/IconButton';
 import EmojiPicker from './components/EmojiPicker';
+import EmojiList from './components/EmojiList';
 
 import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
@@ -16,6 +17,7 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null)
   const [showAppOptions, setShowAppOptions] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
+  const [pickedEmoji,setPickedEmoji]=useState(null)
   
   const onReset = () => {
     setSelectedImage(false)
@@ -73,7 +75,7 @@ export default function App() {
         )
       }
       <EmojiPicker onClose={onCloseModal} isVisible={isModalVisible}>
-        
+      <EmojiList onClose={onCloseModal} onEmojiSelected={setPickedEmoji}/>
       </EmojiPicker>
       <StatusBar
         style="auto" />
