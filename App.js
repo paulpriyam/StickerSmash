@@ -5,6 +5,7 @@ import ImageViewer from './components/ImageViewer';
 import Button from './components/Buttons';
 import CircularButton from './components/CircularButton';
 import IconButton from './components/IconButton';
+import EmojiPicker from './components/EmojiPicker';
 
 import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
@@ -12,18 +13,24 @@ import { useState } from 'react';
 const placeHolderImage=require("./assets/images/background-image.png")
 export default function App() {
 
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [showAppOptions, setShowAppOptions] = useState(false)
+  const [isModalVisible, setModalVisible] = useState(false)
+  
   const onReset = () => {
     setSelectedImage(false)
   }
   const onAddSticker = () => {
-    // need to  add 
+   setModalVisible(true)
   }
   const onSaveImageAsync = () => {
     // need to add
   }
 
-  const [selectedImage, setSelectedImage] = useState(null)
-  const [showAppOptions,setShowAppOptions]=useState(false)
+  const onCloseModal = () => {
+    setModalVisible(false)
+  }
+
 
   const pickImageAync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync(
@@ -65,6 +72,9 @@ export default function App() {
       </View>
         )
       }
+      <EmojiPicker onClose={onCloseModal} isVisible={isModalVisible}>
+        
+      </EmojiPicker>
       <StatusBar
         style="auto" />
     </View>
