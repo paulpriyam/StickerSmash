@@ -11,6 +11,7 @@ import EmojiList from './components/EmojiList';
 import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
 import EmojiSticker from './components/EmojiSticker';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const placeHolderImage=require("./assets/images/background-image.png")
 export default function App() {
@@ -51,7 +52,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <ImageViewer
         placeHolderImage={placeHolderImage}
         imageSelected={selectedImage} />
@@ -83,7 +84,7 @@ export default function App() {
       </EmojiPicker>
       <StatusBar
         style="auto" />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
