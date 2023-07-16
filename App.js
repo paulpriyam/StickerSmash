@@ -10,6 +10,7 @@ import EmojiList from './components/EmojiList';
 
 import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
+import EmojiSticker from './components/EmojiSticker';
 
 const placeHolderImage=require("./assets/images/background-image.png")
 export default function App() {
@@ -54,6 +55,9 @@ export default function App() {
       <ImageViewer
         placeHolderImage={placeHolderImage}
         imageSelected={selectedImage} />
+      {
+        pickedEmoji!==null ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> :null
+      }
       {
         showAppOptions ? (
           <View
@@ -105,6 +109,7 @@ const styles = StyleSheet.create({
   optionsFooterContainer: {
     flex: 1 / 3,
     flexDirection: 'row',
-    marginTop:20
+    position: "absolute",
+    bottom:30
   },
 });
