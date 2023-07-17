@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from 'react';
 import EmojiSticker from './components/EmojiSticker';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as MediaLibrary from "expo-media-library";
 
 const placeHolderImage=require("./assets/images/background-image.png")
 export default function App() {
@@ -19,7 +20,12 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null)
   const [showAppOptions, setShowAppOptions] = useState(false)
   const [isModalVisible, setModalVisible] = useState(false)
-  const [pickedEmoji,setPickedEmoji]=useState(null)
+  const [pickedEmoji, setPickedEmoji] = useState(null)
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+
+  if (status == null) {
+    requestPermission();
+  }
   
   const onReset = () => {
     setSelectedImage(false)
