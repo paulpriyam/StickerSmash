@@ -1,5 +1,8 @@
 import { View, Image } from "react-native";
-import { TapGestureHandler } from "react-native-gesture-handler";
+import {
+  PanGestureHandler,
+  TapGestureHandler,
+} from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,10 +12,25 @@ import Animated, {
 
 // This is the sticker that would be displayed on the image.
 const AnimatedImage = Animated.createAnimatedComponent(Image);
+const AnimatedView = Animated.createAnimatedComponent(View)
 
 export default function EmojiSticker({ imageSize, stickerSource }) {
-  const scaleImage = useSharedValue(imageSize);
 
+  const scaleImage = useSharedValue(imageSize);
+  const translateX = useSharedValue(0);
+  const translateY= useSharedValue(0);
+
+  const onDrag = useAnimatedGestureHandler({
+    onStart: (event,context) => {
+      context.translateX = translateX.value
+      context.translateY=translateY.value
+    },
+    onActive: (event,context) => {
+      translateX.value = context.translateX + event.translationX
+      translateY.value = context.translateY + event.translationY
+    }
+  })
+  
   const onDoubleTap = useAnimatedGestureHandler({
     onActive: () => {
       if (scaleImage.value !== imageSize * 2) {
@@ -28,21 +46,38 @@ export default function EmojiSticker({ imageSize, stickerSource }) {
     };
   });
 
+  const animatedViewStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: translateX.value,
+        },
+        {
+          translateY: translateY.value,
+        },
+      ],
+    };
+  });
+
   return (
-    <View style={{ top: -350 }}>
-      <TapGestureHandler onGestureEvent={onDoubleTap} numberOfTaps={2}>
-        <AnimatedImage
-          source={stickerSource}
-          style={[
-            imageStyle,
-            {
-              height: imageSize,
-              width: imageSize,
-            },
-          ]}
-          resizeMode="contain"
-        />
-      </TapGestureHandler>
-    </View>
+    <PanGestureHandler onGestureEvent={onDrag}>
+      <AnimatedView style={[animatedViewStyle, { top: -350 }]}>
+        <TapGestureHandler onGestureEvent={onDoubleTap} numberOfTaps={2}>
+          <AnimatedImage
+            source={stickerSource}
+            style={[
+              imageStyle,
+              {
+                height: imageSize,
+                width: imageSize,
+              },
+            ]}
+            resizeMode="contain"
+          />
+        </TapGestureHandler>
+      </AnimatedView>
+    </PanGestureHandler>
   );
 }
+
+
