@@ -9,10 +9,11 @@ import EmojiPicker from './components/EmojiPicker';
 import EmojiList from './components/EmojiList';
 
 import * as ImagePicker from "expo-image-picker";
-import { useState } from 'react';
+import { useState, useRef, useReducer } from 'react';
 import EmojiSticker from './components/EmojiSticker';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as MediaLibrary from "expo-media-library";
+import { captureRef } from "react-native-view-shot";
 
 const placeHolderImage=require("./assets/images/background-image.png")
 export default function App() {
@@ -22,6 +23,8 @@ export default function App() {
   const [isModalVisible, setModalVisible] = useState(false)
   const [pickedEmoji, setPickedEmoji] = useState(null)
   const [status, requestPermission] = MediaLibrary.usePermissions();
+
+  const imageRef = useRef();
 
   if (status == null) {
     requestPermission();
@@ -33,9 +36,22 @@ export default function App() {
   const onAddSticker = () => {
    setModalVisible(true)
   }
-  const onSaveImageAsync = () => {
-    // need to add
+  const onSaveImageAsync = async () => {
+    try {
+      const imageUri = await captureRef(imageRef,
+        {
+        height: 440,
+        quality: 1
+      });
+      await MediaLibrary.saveToLibraryAsync(imageUri)
+      if (imageUri) {
+        alert("saved")
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
+
 
   const onCloseModal = () => {
     setModalVisible(false)
@@ -59,12 +75,18 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <View
+        ref={imageRef}
+        collapsable={false}
+      >
       <ImageViewer
         placeHolderImage={placeHolderImage}
-        imageSelected={selectedImage} />
+        imageSelected={selectedImage}
+        />
       {
         pickedEmoji!==null ? <EmojiSticker imageSize={40} stickerSource={pickedEmoji}/> :null
-      }
+        }
+      </View>
       {
         showAppOptions ? (
           <View
